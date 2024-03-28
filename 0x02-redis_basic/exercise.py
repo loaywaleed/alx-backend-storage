@@ -10,8 +10,10 @@ from typing import Union, Callable, Any
 
 def count_calls(method: Callable) -> Callable:
     """Number of calls made to a method"""
+
     @functools.wraps(method)
     def wrapper(self, args, **kwargs) -> Any:
+        """wrapper function to count calls"""
         if isinstance(self._redis, redis.Redis) == True:
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
