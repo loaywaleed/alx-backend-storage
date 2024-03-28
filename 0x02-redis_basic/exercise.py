@@ -17,6 +17,7 @@ def count_calls(method: Callable) -> Callable:
         if isinstance(self._redis, redis.Redis) == True:
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
+
     return wrapper
 
 
