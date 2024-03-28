@@ -4,16 +4,29 @@ Redis Moduel
 """
 import redis
 import uuid
-from typing import Union, Callable
+import functools
+from typing import Union, Callable, Any
+
+
+def count_calls(method: Callable) -> Callable:
+    """Number of calls made to a method"""
+    @functools.wraps(method)
+    def wrapper(self, args, **kwargs) -> Any:
+        if isinstance(self._redis, redis.Redis) == True:
+            self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+    return wrapper
 
 
 class Cache:
     """Class that resembles cache"""
+
     def __init__(self) -> None:
         """Instantiation when called"""
         self._redis = redis.Redis()
         self._redis.flushdb()
-    
+
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Method that stores a value in redis"""
         new_str = str(uuid.uuid4())
@@ -30,7 +43,6 @@ class Cache:
     def get_str(self, key: str) -> str:
         """Conversion to string"""
         return self.get(key,  fn=str)
-        
 
     def get_int(self, key: str) -> int:
         """Conversion to int"""
