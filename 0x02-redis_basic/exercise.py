@@ -4,14 +4,14 @@ Redis Moduel
 """
 import redis
 import uuid
-import functools
+from functools import wraps
 from typing import Union, Callable, Any
 
 
 def count_calls(method: Callable) -> Callable:
     """Number of calls made to a method"""
 
-    @functools.wraps(method)
+    @wraps(method)
     def wrapper(self, args, **kwargs) -> Any:
         """wrapper function to count calls"""
         if isinstance(self._redis, redis.Redis) == True:
