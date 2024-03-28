@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
+"""
+Redis Moduel
+"""
 import redis
 import uuid
-from typing import Union
+from typing import Union, Callable
 
 
 class Cache:
@@ -17,4 +20,18 @@ class Cache:
         self._redis.set(new_str, data)
         return new_str
 
+    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
+        """getting value given a key"""
+        value = self._redis.get(key)
+        if fn:
+            value = fn(value)
+        return value
+
+    def get_str(self, key: str) -> str:
+        """Conversion to string"""
+        return self.get(key,  fn=str)
         
+
+    def get_int(self, key: str) -> int:
+        """Conversion to int"""
+        return self.get(key, fn=int)
