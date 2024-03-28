@@ -6,7 +6,7 @@ from typing import Union
 
 class Cache:
     """Class that resembles cache"""
-    def __init__(self):
+    def __init__(self) -> None:
         """Instantiation when called"""
         self._redis = redis.Redis()
         self._redis.flushdb()
