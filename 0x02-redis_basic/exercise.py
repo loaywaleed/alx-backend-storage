@@ -42,8 +42,8 @@ def replay(method: Callable) -> None:
     input_key = f"{method.__qualname__}:inputs"
     output_key = f"{method.__qualname__}:outputs"
 
-    input_keys = method.self._redis.lrange(input_key, 0, -1)
-    output_keys = method.self._redis.lrange(output_key, 0, -1)
+    input_keys = method.__self__._redis.lrange(input_key, 0, -1)
+    output_keys = method.__self__._redis.lrange(output_key, 0, -1)
 
     print(f"{method.__qualname__} was called {len(input_keys)} times:")
     for inp, out in zip(input_keys, output_keys):
