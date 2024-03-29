@@ -14,7 +14,7 @@ def count_calls(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(self, *args, **kwargs) -> Any:
         """wrapper function to count calls"""
-        if isinstance(self._redis, redis.Redis) == True:
+        if isinstance(self._redis, redis.Redis):
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
 
@@ -45,11 +45,14 @@ def replay(method: Callable) -> None:
     input_keys = method.self._redis.lrange(input_key, 0, -1)
     output_keys = method.self._redis.lrange(output_key, 0, -1)
 
-    print(f"{method.__qualname__} was called {len(inputs)} times:")
-    for inputs, outputs in zip(inputs, outputs):
-        print(f"{method.__qualname__}
-              (*{inputs.decode("utf-8")})
-                -> {outputs.decode("utf-8")}")
+    print(f"{method.__qualname__} was called {len(input_keys)} times:")
+    for inp, out in zip(input_keys, output_keys):
+        print(
+            "{}(*{}) -> {}".format(
+                method.__qualname__, int.decode("utf-8"), out.decode("utf-8")
+            )
+        )
+
 
 class Cache:
     """Class that resembles cache"""
@@ -67,7 +70,9 @@ class Cache:
         self._redis.set(new_str, data)
         return new_str
 
-    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
+    def get(self,
+            key: str,
+            fn: Callable = None) -> Union[str, bytes, int, float]:
         """getting value given a key"""
         value = self._redis.get(key)
         if fn:
