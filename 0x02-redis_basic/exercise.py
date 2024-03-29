@@ -39,11 +39,14 @@ def call_history(method: Callable) -> Callable:
 
 def replay(method: Callable) -> None:
     """Displays history of calls of a particular function"""
-    input_key = f"{method.__qualname__}:inputs"
-    output_key = f"{method.__qualname__}:outputs"
+    input_key = "{}:inputs".format(method.__qualname__)
+    output_key = "{}:outputs".format(method.__qualname__)
 
     input_keys = method.__self__._redis.lrange(input_key, 0, -1)
     output_keys = method.__self__._redis.lrange(output_key, 0, -1)
+
+    print("{} was called {} times:".format(
+        method.__qualname__, len(input_keys)))
 
     print(f"{method.__qualname__} was called {len(input_keys)} times:")
     for inp, out in zip(input_keys, output_keys):
