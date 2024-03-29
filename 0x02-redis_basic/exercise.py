@@ -47,8 +47,6 @@ def replay(method: Callable) -> None:
 
     print("{} was called {} times:".format(
         method.__qualname__, len(input_keys)))
-
-    print(f"{method.__qualname__} was called {len(input_keys)} times:")
     for inp, out in zip(input_keys, output_keys):
         print(
             "{}(*{}) -> {}".format(
