@@ -52,7 +52,7 @@ def replay(method: Callable) -> None:
     for inp, out in zip(input_keys, output_keys):
         print(
             "{}(*{}) -> {}".format(
-                method.__qualname__, int.decode("utf-8"), out.decode("utf-8")
+                method.__qualname__, inp.decode("utf-8"), out.decode("utf-8")
             )
         )
 
